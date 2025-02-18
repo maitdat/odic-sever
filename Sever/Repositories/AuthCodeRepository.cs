@@ -1,26 +1,38 @@
-﻿using Sever.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Sever.Entity;
+using Sever.Models;
 
 namespace Sever.Repositories
 {
     public class AuthCodeRepository : IAuthCodeRepository
     {
+        private readonly AppDbContext _appDbContext;
         public readonly Dictionary<string, AuthCodeItem> items = [];
-
-        public void Add(string code, AuthCodeItem codeItem)
+        
+        public AuthCodeRepository (AppDbContext appDbContext)
         {
-            items[code] = codeItem;
-            var obj = items;
+            _appDbContext = appDbContext;
         }
 
         public void Delete(string code)
         {
-            items.Remove(code);
+            var item = _appDbContext.AuthorizationRequestData.FirstOrDefault(x => x.AuthorizationCode == code);
+            if (item == null) return;
+            _appDbContext.AuthorizationRequestData.Remove(item);
         }
 
-        public AuthCodeItem? FindByCode(string code)
+        public async Task<AuthorizationRequestData>? FindByCode(string code)
         {
-            return items.TryGetValue(code, out var codeItem) ? codeItem : null;
+            return await _appDbContext.AuthorizationRequestData
+                .Include(x=>x.User)
+                .Where(x => x.AuthorizationCode == code)
+                .FirstOrDefaultAsync();
         }
 
+        public async Task Add(AuthorizationRequestData data)
+        {
+            _appDbContext.AuthorizationRequestData.Add(data);
+            await _appDbContext.SaveChangesAsync();
+        }
     }
 }

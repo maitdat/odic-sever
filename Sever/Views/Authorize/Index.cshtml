@@ -35,9 +35,15 @@
                         <input type="hidden" name="response_mode" value="@Model.ResponseMode" />
                         <input type="hidden" name="nonce" value="@Model.Nonce" />
                         <input type="hidden" name="state" value="@Model.State" />
-                        <input type="text" name="username" value="" class="form-control" />
+
+                        <label for="username">Username:</label>
+                        <input id="username" type="text" name="username"  />
+
+                        <label for="password">Password:</label>
+                        <input id="password" type="password" name="password" />
 
                         <input type="submit" class="btn btn-primary" value="Authorize" />
+                        
                     </form>
                 </div>
             </div>

@@ -1,11 +1,12 @@
-﻿using Sever.Models;
+﻿using Sever.Entity;
+using Sever.Models;
 
 namespace Sever.Repositories
 {
     public interface IAuthCodeRepository
     {
-        AuthCodeItem? FindByCode(string code);
-        void Add(string code, AuthCodeItem codeItem);
+        Task<AuthorizationRequestData>? FindByCode(string code);
+        Task Add(AuthorizationRequestData data);
         void Delete(string code);
 
     }

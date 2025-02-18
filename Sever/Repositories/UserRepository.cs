@@ -1,29 +1,25 @@
-﻿using Sever.Entity;
+﻿using Microsoft.AspNetCore.Identity;
+using Sever.Entity;
 
 namespace Sever.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ICollection<User> _users = new List<User>()
-        {
-            new User() { Id = "1", UserName = "admin" },
-            new User() { Id = "2", UserName = "user" },
-            new User() { Id = "3", UserName = "dat" }
-        };
+        private readonly UserManager<User> _userManager;
 
-        public UserRepository() { }
+        public UserRepository ( UserManager<User> userManager)
+        {
+            _userManager = userManager;
+        }
+
         public bool CheckUser(string username)
         {
-            if(_users.Any(u => u.UserName == username))
-            {
-                return true;
-            }
-            return false;
+            return _userManager.Users.Any(u => u.UserName == username);
         }
 
         public User Get(string username)
         {
-            return _users.FirstOrDefault(x=>x.UserName == username);
+            return _userManager.Users.FirstOrDefault(x => x.UserName == username);
         }
     }
 }
